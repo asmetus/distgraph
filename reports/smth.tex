@@ -1,0 +1,175 @@
+% !TEX TS-program = pdflatexmk
+\documentclass[12pt,a4paper]{article}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry} % Для настройки полей
+\usepackage{hyperref}
+\usepackage{titling}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}
+  {\S \thesection}
+  {1em}
+  {}
+
+% Настройка полей для научного стиля
+\geometry{
+    left=20mm,    % Уменьшенный отступ слева
+    right=20mm,   % Уменьшенный отступ справа
+    top=15mm,     % Уменьшенный отступ сверху
+    bottom=15mm,  % Уменьшенный отступ снизу
+}
+
+% Настройка гиперссылок
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    pdftitle={Что-то}
+}
+
+% Настройка теорем
+\newtheorem{theorem}{Теорема}[section]
+\newtheorem*{theorem*}{Теорема}
+\newtheorem{lemma}{Лемма}[section]
+\newtheorem{corollary}{Следствие}[section]
+\newtheorem*{corollary*}{Следствие}
+\newtheorem{statement}{Утверждение}[section]
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\DD}{\mathbb{D}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\defeq}{\overset{def}=}
+
+\newtheoremstyle{solutionstyle} % Имя стиля
+  {10pt}   % Отступ сверху
+  {10pt}   % Отступ снизу
+  {} % Стиль шрифта внутри блока (например, наклонный)
+  {15pt}   % Отступ от левого края
+  {} % Стиль заголовка (жирный
+
+  {:}      % Разделитель после заголовка
+  {0.5em}  % Расстояние между заголовком и текстом
+  {} % Заголовок решения
+
+% Применяем этот стиль к новому окружению
+\theoremstyle{solutionstyle}
+\newtheorem*{solution}{Решение}
+
+\theoremstyle{plain}
+\newtheorem{example}{Пример}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem*{definition*}{Определение}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Замечание}
+\newtheorem*{remind}{Напоминание}
+
+% Настройка заголовка документа
+\title{Чето}
+\author{}
+\date{}
+
+\renewcommand{\maketitlehookd}{
+    \centering
+    \textit{} \\[1em]
+}
+
+\renewcommand{\proofname}{Доказательство}%
+\renewcommand\qedsymbol{$\blacksquare$}
+
+\begin{document}
+
+\section{Отчет}
+	Применяем метод индикаторов: \\
+	$I_{ijk}$ --- индикатор того, что точки под номерами $i, j, k$ образовали треугольник. \\
+	Вероятность его успеха: \\
+	$$\PP(I_{ijk} = 1) = \iiint\limits_{S_\triangle} p(x)p(y)p(z) dxdydz\ \boxed{=}$$
+	Где множество $S_\triangle$ описывается как:
+	$$S_\triangle = \{(x, y, z) \in [a, b]^3| \max(x, y, z) - \min(x, y, z) < \delta\}$$
+	В силу симметрии:
+	$$\boxed{=}\ 6\int\limits_a^b \int\limits_x^{x+\delta} \int\limits_y^{x+\delta} p(x)p(y)p(z) dz\ dy\ dx $$
+	Получили вероятность одного треугольника:
+	$$\PP \defeq \PP(I_{ijk} = 1) = 6\int\limits_a^b \int\limits_x^{x+\delta} \int\limits_y^{x+\delta} p(x)p(y)p(z) dz\ dy\ dx$$
+	 И матожидание получилось:
+	 $$\EE(T) = \sum\EE(I_{ijk}) = C_n^3 \PP \approx \frac{n^3}{6}\cdot \PP$$
+	 И распишем дисперсию:
+	 $$\DD(T) = \EE(T^2) - \EE(T)^2 = \underbrace{\sum\EE(I_{ijk}\ \&\ I_{lnm})}_{\text{сумма по всем парам троек}} - \EE(T)^2 = $$
+	 $$= \sum\EE(I_{ijk}\ \&\ I_{ijk}) + \sum\EE(I_{ijk}\ \&\ I_{ijl}) + \sum \EE(I_{ijk}\ \&\ I_{iln}) + \underbrace{\sum\EE(I_{ijk}\ \&\ I_{lnm})}_{\approx \EE(T)^2} - \EE(T)^2  = $$
+	$$= \frac{A_n^3}{6} \cdot \PP + \frac{A_n^4}{4} \cdot \widetilde\PP + \frac{A_n^5}{8} \widetilde{\widetilde\PP} $$
+	Тут в знаменателях --- количества автоморфизмов у этих подграфов: \\
+	У треугольника всего 6 автоморфизмов, у \textit{ромба} --- 4, у \textit{бабочки} --- целых 8. \\
+	
+	Что такое $\widetilde\PP$ и $\widetilde{\widetilde\PP}$? \\
+	Это вероятность для случаев, когда события не независимы, а если конкретно:
+	$$\widetilde\PP = \PP(I_{ijk}\ \&\ I_{ijl}) = $$
+	$$= \int\limits_a^b p(x) \int\limits_{-\delta}^\delta p(x+t) \cdot \PP(\triangle_{123} | x_3 = x, x_2 = x+t) \cdot \PP(\triangle_{234} | x_3 = x, x_2 = x+t)dx = $$
+	$$= \int\limits_a^b p(x) \int\limits_{-\delta}^\delta p(x+t)  \PP(\triangle_{123} | x_3 = x, x_2 = x+t)^2dx = $$
+	$$= \int\limits_a^b p(x) \left(\int\limits_0^\delta p(x+t) (F(x+\delta) - F(x+t-\delta))^2dt + \int\limits_0^\delta p(x-t) (F(x+\delta - t) - F(x-\delta))^2dt\right)dx $$
+	И случай бабочки:
+	$$\widetilde{\widetilde\PP} = \PP(I_{ijk}\ \&\ I_{iln}) = $$
+	$$= \int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x) \cdot \PP(\triangle_{345} | x_3 = x)dx = $$
+	$$= \int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x)^2 dx = $$
+	$$= \int\limits_a^b p(x) \left(\int\limits_0^\delta p(x+t) (F(x+\delta) - F(x+t-\delta))dt + \int\limits_0^\delta p(x-t) (F(x+\delta - t) - F(x-\delta))dt\right)^2 dx$$
+	
+\section{Для конкретных распределений}
+	\begin{enumerate}
+		\item Равномерное распределение \\
+		$\Omega = [0, 1], \ \ F(x) = x$, получаем: \\
+		$$\PP = 3\delta^2$$
+		$$\widetilde\PP = \frac{14}{3}\delta^3$$
+		$$\widetilde{\widetilde\PP} = 9\delta^4$$
+		$$\EE(T) = \frac{n^3}{6} \cdot 3\delta^2 = \frac{n^3\delta^2}{2}$$
+		$$\DD(T) \approx \frac{n^3}{6}\PP + \frac{n^4}{4}\widetilde\PP + \frac{n^5}{8}\widetilde{\widetilde\PP} = \frac{n^3\delta^2}{2} + \frac{14n^4\delta^3}{12} + \frac{9n^5\delta^4}{8}$$
+		Генерация тестов подтвердила $\EE$, но не $\DD$:
+		\begin{center}
+		$\DD(T) \approx 0.49\cdot n^3\delta^2+ 2.28\cdot n^4\delta^3 + 0.02\cdot n^5\delta^4$ --- получено на практике --- \href{https://www.wolframalpha.com/input?i=%7Ba*0.5%5E3*1000+%2B+b*0.5%5E4*1000+%2B+c*0.5%5E5*1000+%3D+205.67728395360000015%2C+a*1000+%2B+b*1000+%2B+c*1000+%3D+2803.784277440000011%2C+a*3%5E3*10000+%2B+b*3%5E4*10000+%2B+c*3%5E5*10000+%3D+2039971.7419526427984%7D}{Wolfram}
+		\end{center}
+		\item Экспоненциальное распределение \\
+		$\Omega = [0, \infty], \ \ F(x) = 1-e^{-x}$, получаем:
+		\begin{center}
+		$\PP = 2 e^{-\delta} (\cosh(\delta) - 1) \approx \delta^2$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=6*Integrate%5BIntegrate%5BIntegrate%5BPower%5Be%2C-x%5DPower%5Be%2C-y%5DPower%5Be%2C-z%5D%2C%7Bz%2Cy%2Cx%2Ba%7D%5D%2C%7By%2Cx%2Cx%2Ba%7D%5D%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram}
+		\\ \ \\
+		$\widetilde\PP = \frac{1}{6} (\sinh(\delta) - 5 \sinh(2 \delta) + 3 \sinh(3 \delta)) \approx \dfrac{7}{6}\delta^3$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x-t%5D*Power%5B%5C%2840%29Power%5Be%2C-x-t%2Ba%5D-Power%5Be%2C-x-a%5D%5C%2841%29%2C2%5D%2C%7Bt%2C0%2Ca%7D%5D%2BIntegrate%5BPower%5Be%2C-x%2Bt%5D*Power%5B%5C%2840%29Power%5Be%2C-x%2Ba%5D-Power%5Be%2C-x-a%2Bt%5D%5C%2841%29%2C2%5D%2C%7Bt%2C0%2Ca%7D%5D}{Wolfram} + \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x%5D*%5C%2840%29Divide%5B1%2C3%5D+Power%5Be%2C%5C%2840%29-3+%5C%2840%29a+%2B+x%5C%2841%29%5C%2841%29%5D+Power%5B%5C%2840%29-1+%2B+Power%5Be%2Ca%5D%5C%2841%29%2C3%5D+%5C%2840%293+%2B+3+Power%5Be%2Ca%5D+%2B+Power%5Be%2C%5C%2840%292+a%5C%2841%29%5D%5C%2841%29+%2B+Divide%5B1%2C3%5D+Power%5Be%2C%5C%2840%29-2+a+-+3+x%5C%2841%29%5D+Power%5B%5C%2840%29-1+%2B+Power%5Be%2Ca%5D%5C%2841%29%2C3%5D+%5C%2840%291+%2B+3+Power%5Be%2Ca%5D+%2B+3+Power%5Be%2C%5C%2840%292+a%5C%2841%29%5D%5C%2841%29%5C%2841%29%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram} \\ \ \\
+		$\widetilde{\widetilde\PP} = \frac{16}{5} (1 + 2 \cosh(\delta))^2 \sinh^4(\frac{\delta}{2}) \approx \dfrac{9}{5}\delta^4$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x%5D*Power%5B%5C%2840%29Integrate%5BPower%5Be%2C-x-t%5D*%5C%2840%29Power%5Be%2C-x-t%2Ba%5D-Power%5Be%2C-x-a%5D%5C%2841%29%2C%7Bt%2C0%2Ca%7D%5D%2BIntegrate%5BPower%5Be%2C-x%2Bt%5D*%5C%2840%29Power%5Be%2C-x%2Ba%5D-Power%5Be%2C-x-a%2Bt%5D%5C%2841%29%2C%7Bt%2C0%2Ca%7D%5D%5C%2841%29%2C2%5D%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram}
+		\end{center}
+		$$\EE(T) \approx \frac{n^3}{6} \cdot \delta^2 = \frac{n^3\delta^2}{6}$$
+		$$\DD(T) = \frac{n^3}{6}\PP + \frac{n^4}{4}\widetilde\PP + \frac{n^5}{8}\widetilde{\widetilde\PP} = \frac{n^3\delta^2}{6} + \frac{7n^4\delta^3}{24} + \frac{9n^5\delta^4}{40} \approx $$
+		$$ \approx 0.167\cdot n^3\delta^2 + 0.292\cdot n^4\delta^3 + 0.225\cdot n^5\delta^4$$
+		\begin{center}
+		$\DD(T) \approx 0.156\cdot n^3\delta^2 + 0.591\cdot n^4\delta^3 + 0.195\cdot n^5\delta^4$ --- получено на практике --- \href{https://www.wolframalpha.com/input?i=%7Ba*0.5%5E3*1000+%2B+b*0.5%5E4*1000+%2B+c*0.5%5E5*1000+%3D+62.501940419374999974%2C+a*1000+%2B+b*1000+%2B+c*1000+%3D+941.72429328309999974%2C+a*2%5E3*1000+%2B+b*2%5E4*1000+%2B+c*2%5E5*1000+%3D+16936.419938751099835%7D}{Wolfram}
+		\end{center}
+		\item Нормальное распределение \\
+		$\Omega = (-\infty, \infty),\  p(x) = \dfrac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}}$ \\
+		В этом случае точной зависимости $\PP$ от $\delta$ посчитать не получилось, но есть значения в некоторых точках (через Wolfram):
+		$$\begin{tabular}{|c|c|}
+		$\delta$ & $\PP$ \\
+		\hline
+		0.05 & 6.9e-4 \\
+		0.01 & 2.76e-5 \\
+		0.005 & 6.9e-6 \\
+		\hline
+		\end{tabular}$$
+		Тут сразу видно, что зависимость квадратичная, и можно предположить, что:
+		$$\PP \approx 0.276 \cdot \delta^2$$
+		Тогда получаем:
+		$$\EE(T) \approx \frac{n^3}{6} \PP \approx \frac{n^3\delta^2}{21.7}$$
+		Матожидание сошлось!
+	\end{enumerate}
+
+\section{Ковариация}
+	$$cov(X, Y) = E(XY) - E(X)\cdot E(Y)$$
+	Для индикаторов:
+	$$cov(I_{ijk}\ \&\ I_{ijk}) = E(I_{ijk}) - E(I_{ijk})^2 = \PP(I_{ijk}) - \PP(I_{ijk})^2 = \PP - \PP^2$$
+	$$cov(I_{ijk}\ \&\ I_{ijl}) = E(I_{ijk}\ \&\ I_{ijl}) - E(I_{ijk})^2 = \PP(I_{ijk}\ \&\ I_{ijl}) - \PP(I_{ijk})^2 = \widetilde \PP - \PP^2$$
+	$$cov(I_{ijk}\ \&\ I_{ilm}) = E(I_{ijk}\ \&\ I_{ilm}) - E(I_{ijk})^2 = \PP(I_{ijk}\ \&\ I_{ilm}) - \PP(I_{ijk})^2 = \widetilde{\widetilde \PP} - \PP^2$$
+	
+\end{document}
