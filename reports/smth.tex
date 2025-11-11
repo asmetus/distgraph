@@ -100,57 +100,69 @@
 	Получили вероятность одного треугольника:
 	$$\PP \defeq \PP(I_{ijk} = 1) = 6\int\limits_a^b \int\limits_x^{x+\delta} \int\limits_y^{x+\delta} p(x)p(y)p(z) dz\ dy\ dx$$
 	 И матожидание получилось:
-	 $$\EE(T) = \sum\EE(I_{ijk}) = C_n^3 \PP \approx \frac{n^3}{6}\cdot \PP$$
+	 $$\EE(T) = \sum\EE(I_{ijk}) = C_n^3 \PP = \frac{n(n-1)(n-2)}{6}\PP\approx \frac{n^3}{6}\cdot \PP$$
 	 И распишем дисперсию:
 	 $$\DD(T) = \EE(T^2) - \EE(T)^2 = \underbrace{\sum\EE(I_{ijk}\ \&\ I_{lnm})}_{\text{сумма по всем парам троек}} - \EE(T)^2 = $$
-	 $$= \sum\EE(I_{ijk}\ \&\ I_{ijk}) + \sum\EE(I_{ijk}\ \&\ I_{ijl}) + \sum \EE(I_{ijk}\ \&\ I_{iln}) + \underbrace{\sum\EE(I_{ijk}\ \&\ I_{lnm})}_{\approx \EE(T)^2} - \EE(T)^2  = $$
-	$$= \frac{A_n^3}{6} \cdot \PP + \frac{A_n^4}{4} \cdot \widetilde\PP + \frac{A_n^5}{8} \widetilde{\widetilde\PP} $$
+	 $$= \sum\EE(I_{ijk}\ \&\ I_{ijk}) + \sum\EE(I_{ijk}\ \&\ I_{ijl}) + \sum \EE(I_{ijk}\ \&\ I_{iln}) +
+	 %\underbrace{\sum\EE(I_{ijk}\ \&\ I_{lnm})}_{\approx \EE(T)^2} - \EE(T)^2  = $$
+	 \sum\EE(I_{ijk}\ \&\ I_{lnm}) - \EE(T)^2  = $$
+	$$= \frac{A_n^3}{6} \cdot \PP + \frac{A_n^4}{4} \cdot \widetilde\PP + \frac{A_n^5}{8} \widetilde{\widetilde\PP}
+	+ C_n^3\cdot C_{n-3}^3\cdot \PP^2 - (C_n^3)^2\PP^2 = $$
+	$$ = \frac{n(n-1)(n-2)}{6}\PP + \frac{n(n-1)(n-2)(n-3)}{4}\widetilde\PP + \frac{n(n-1)(n-2)(n-3)(n-4)}{8}\widetilde{\widetilde\PP} - $$
+		$$ - \left(\frac{(n(n-1)(n-2))^2}{36} - \frac{n(n-1)(n-2)(n-3)(n-4)(n-5)}{36}\right)\PP^2 = $$
+	$$ = \frac{n(n-1)(n-2)}{6}\PP + \frac{n(n-1)(n-2)(n-3)}{4}\widetilde\PP + \frac{n(n-1)(n-2)(n-3)(n-4)}{8}\widetilde{\widetilde\PP} - $$
+		$$ - \frac{9 n^5 - 72 n^4 + 213 n^3 - 270 n^2 + 120 n}{36} \PP^2 $$
+	\begin{remark}
+		Порядки этих величин соответственно: $n^3\delta^2,\ n^4\delta^3,\ n^5\delta^4, n^5\delta^4$
+	\end{remark}
 	Тут в знаменателях --- количества автоморфизмов у этих подграфов: \\
 	У треугольника всего 6 автоморфизмов, у \textit{ромба} --- 4, у \textit{бабочки} --- целых 8. \\
 	
 	Что такое $\widetilde\PP$ и $\widetilde{\widetilde\PP}$? \\
 	Это вероятность для случаев, когда события не независимы, а если конкретно:
 	$$\widetilde\PP = \PP(I_{ijk}\ \&\ I_{ijl}) = $$
-	$$= \int\limits_a^b p(x) \int\limits_{-\delta}^\delta p(x+t) \cdot \PP(\triangle_{123} | x_3 = x, x_2 = x+t) \cdot \PP(\triangle_{234} | x_3 = x, x_2 = x+t)dx = $$
-	$$= \int\limits_a^b p(x) \int\limits_{-\delta}^\delta p(x+t)  \PP(\triangle_{123} | x_3 = x, x_2 = x+t)^2dx = $$
-	$$= \int\limits_a^b p(x) \left(\int\limits_0^\delta p(x+t) (F(x+\delta) - F(x+t-\delta))^2dt + \int\limits_0^\delta p(x-t) (F(x+\delta - t) - F(x-\delta))^2dt\right)dx $$
+	$$= 2\int\limits_a^b p(x) \int\limits_{-\delta}^\delta p(x+t) \cdot \PP(\triangle_{123} | x_3 = x, x_2 = x+t) \cdot \PP(\triangle_{234} | x_3 = x, x_2 = x+t)dx = $$
+	$$= 2\int\limits_a^b p(x) \int\limits_{-\delta}^\delta p(x+t)  \PP(\triangle_{123} | x_3 = x, x_2 = x+t)^2dx = $$
+	$$= 2\int\limits_a^b p(x) \left(\int\limits_0^\delta p(x+t) (F(x+\delta) - F(x+t-\delta))^2dt + \int\limits_0^\delta p(x-t) (F(x+\delta - t) - F(x-\delta))^2dt\right)dx $$
+	Тут является важным коэффициент \textbf{2}, который появился оттого, что я \textbf{зафиксировал} выбор диагонального ребра, отчего автоморфизмов стало равно 4. \\
 	И случай бабочки:
 	$$\widetilde{\widetilde\PP} = \PP(I_{ijk}\ \&\ I_{iln}) = $$
 	$$= \int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x) \cdot \PP(\triangle_{345} | x_3 = x)dx = $$
 	$$= \int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x)^2 dx = $$
 	$$= \int\limits_a^b p(x) \left(\int\limits_0^\delta p(x+t) (F(x+\delta) - F(x+t-\delta))dt + \int\limits_0^\delta p(x-t) (F(x+\delta - t) - F(x-\delta))dt\right)^2 dx$$
+	Тут \textit{точно} не хватает множителя \textbf{2}, но я не знаю где...
 	
 \section{Для конкретных распределений}
+	\textbf{В ФОРМУЛАХ УЧТЕНО ДОМНОЖЕНИЕ ВЕРОЯТНОСТИ $\widetilde{\widetilde\PP}$ НА 2}
 	\begin{enumerate}
 		\item Равномерное распределение \\
-		$\Omega = [0, 1], \ \ F(x) = x$, получаем: \\
+		$\Omega = (0, 1), \ \ F(x) = x$, получаем: \\
 		$$\PP = 3\delta^2$$
-		$$\widetilde\PP = \frac{14}{3}\delta^3$$
-		$$\widetilde{\widetilde\PP} = 9\delta^4$$
-		$$\EE(T) = \frac{n^3}{6} \cdot 3\delta^2 = \frac{n^3\delta^2}{2}$$
-		$$\DD(T) \approx \frac{n^3}{6}\PP + \frac{n^4}{4}\widetilde\PP + \frac{n^5}{8}\widetilde{\widetilde\PP} = \frac{n^3\delta^2}{2} + \frac{14n^4\delta^3}{12} + \frac{9n^5\delta^4}{8}$$
-		Генерация тестов подтвердила $\EE$, но не $\DD$:
-		\begin{center}
-		$\DD(T) \approx 0.49\cdot n^3\delta^2+ 2.28\cdot n^4\delta^3 + 0.02\cdot n^5\delta^4$ --- получено на практике --- \href{https://www.wolframalpha.com/input?i=%7Ba*0.5%5E3*1000+%2B+b*0.5%5E4*1000+%2B+c*0.5%5E5*1000+%3D+205.67728395360000015%2C+a*1000+%2B+b*1000+%2B+c*1000+%3D+2803.784277440000011%2C+a*3%5E3*10000+%2B+b*3%5E4*10000+%2B+c*3%5E5*10000+%3D+2039971.7419526427984%7D}{Wolfram}
-		\end{center}
+		$$\widetilde\PP = \frac{28}{3}\delta^3$$
+		$$\widetilde{\widetilde\PP} = 9\delta^4 \overset{?}\cdot 2$$
+		$$\EE(T) = \frac{n(n-1)(n-2)}{6} \cdot 3\delta^2 \approx \frac{n^3\delta^2}{2}$$
+		$$\DD(T) = \frac{n(n-1)(n-2)}{6}\PP + \frac{n(n-1)(n-2)(n-3)}{4}\widetilde\PP + \frac{n(n-1)(n-2)(n-3)(n-4)}{8}\widetilde{\widetilde\PP} - $$
+		$$ - \frac{9 n^5 - 72 n^4 + 213 n^3 - 270 n^2 + 120 n}{36}\PP^2 \approx $$
+		$$\approx \frac{n^3\delta^2}{2} + \frac{7n^4\delta^3}{3} + \underbrace{\frac{9n^5\delta^4}{4} - \frac{81n^5\delta^4}{36}}_{=0} \approx \frac{n^3\delta^2}{2} + \frac{7n^4\delta^3}{3} + 18n^4\delta^4 - \frac{10n^4\delta^4}{8}$$
 		\item Экспоненциальное распределение \\
-		$\Omega = [0, \infty], \ \ F(x) = 1-e^{-x}$, получаем:
+		$\Omega = (0, \infty), \ \ F(x) = 1-e^{-x}$, получаем:
 		\begin{center}
 		$\PP = 2 e^{-\delta} (\cosh(\delta) - 1) \approx \delta^2$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=6*Integrate%5BIntegrate%5BIntegrate%5BPower%5Be%2C-x%5DPower%5Be%2C-y%5DPower%5Be%2C-z%5D%2C%7Bz%2Cy%2Cx%2Ba%7D%5D%2C%7By%2Cx%2Cx%2Ba%7D%5D%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram}
 		\\ \ \\
-		$\widetilde\PP = \frac{1}{6} (\sinh(\delta) - 5 \sinh(2 \delta) + 3 \sinh(3 \delta)) \approx \dfrac{7}{6}\delta^3$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x-t%5D*Power%5B%5C%2840%29Power%5Be%2C-x-t%2Ba%5D-Power%5Be%2C-x-a%5D%5C%2841%29%2C2%5D%2C%7Bt%2C0%2Ca%7D%5D%2BIntegrate%5BPower%5Be%2C-x%2Bt%5D*Power%5B%5C%2840%29Power%5Be%2C-x%2Ba%5D-Power%5Be%2C-x-a%2Bt%5D%5C%2841%29%2C2%5D%2C%7Bt%2C0%2Ca%7D%5D}{Wolfram} + \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x%5D*%5C%2840%29Divide%5B1%2C3%5D+Power%5Be%2C%5C%2840%29-3+%5C%2840%29a+%2B+x%5C%2841%29%5C%2841%29%5D+Power%5B%5C%2840%29-1+%2B+Power%5Be%2Ca%5D%5C%2841%29%2C3%5D+%5C%2840%293+%2B+3+Power%5Be%2Ca%5D+%2B+Power%5Be%2C%5C%2840%292+a%5C%2841%29%5D%5C%2841%29+%2B+Divide%5B1%2C3%5D+Power%5Be%2C%5C%2840%29-2+a+-+3+x%5C%2841%29%5D+Power%5B%5C%2840%29-1+%2B+Power%5Be%2Ca%5D%5C%2841%29%2C3%5D+%5C%2840%291+%2B+3+Power%5Be%2Ca%5D+%2B+3+Power%5Be%2C%5C%2840%292+a%5C%2841%29%5D%5C%2841%29%5C%2841%29%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram} \\ \ \\
-		$\widetilde{\widetilde\PP} = \frac{16}{5} (1 + 2 \cosh(\delta))^2 \sinh^4(\frac{\delta}{2}) \approx \dfrac{9}{5}\delta^4$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x%5D*Power%5B%5C%2840%29Integrate%5BPower%5Be%2C-x-t%5D*%5C%2840%29Power%5Be%2C-x-t%2Ba%5D-Power%5Be%2C-x-a%5D%5C%2841%29%2C%7Bt%2C0%2Ca%7D%5D%2BIntegrate%5BPower%5Be%2C-x%2Bt%5D*%5C%2840%29Power%5Be%2C-x%2Ba%5D-Power%5Be%2C-x-a%2Bt%5D%5C%2841%29%2C%7Bt%2C0%2Ca%7D%5D%5C%2841%29%2C2%5D%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram}
+		$\widetilde\PP = \dfrac{1}{3} (\sinh(\delta) - 5 \sinh(2 \delta) + 3 \sinh(3 \delta)) \approx \dfrac{7}{3}\delta^3$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x-t%5D*Power%5B%5C%2840%29Power%5Be%2C-x-t%2Ba%5D-Power%5Be%2C-x-a%5D%5C%2841%29%2C2%5D%2C%7Bt%2C0%2Ca%7D%5D%2BIntegrate%5BPower%5Be%2C-x%2Bt%5D*Power%5B%5C%2840%29Power%5Be%2C-x%2Ba%5D-Power%5Be%2C-x-a%2Bt%5D%5C%2841%29%2C2%5D%2C%7Bt%2C0%2Ca%7D%5D}{Wolfram} + \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x%5D*%5C%2840%29Divide%5B1%2C3%5D+Power%5Be%2C%5C%2840%29-3+%5C%2840%29a+%2B+x%5C%2841%29%5C%2841%29%5D+Power%5B%5C%2840%29-1+%2B+Power%5Be%2Ca%5D%5C%2841%29%2C3%5D+%5C%2840%293+%2B+3+Power%5Be%2Ca%5D+%2B+Power%5Be%2C%5C%2840%292+a%5C%2841%29%5D%5C%2841%29+%2B+Divide%5B1%2C3%5D+Power%5Be%2C%5C%2840%29-2+a+-+3+x%5C%2841%29%5D+Power%5B%5C%2840%29-1+%2B+Power%5Be%2Ca%5D%5C%2841%29%2C3%5D+%5C%2840%291+%2B+3+Power%5Be%2Ca%5D+%2B+3+Power%5Be%2C%5C%2840%292+a%5C%2841%29%5D%5C%2841%29%5C%2841%29%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram} + $\cdot 2$\\ \ \\
+		$\widetilde{\widetilde\PP} = \dfrac{16}{5} (1 + 2 \cosh(\delta))^2 \sinh^4(\frac{\delta}{2}) \approx \dfrac{9}{5}\delta^4 \overset{?}\cdot 2$ --- \href{https://www.wolframalpha.com/input?i2d=true&i=Integrate%5BPower%5Be%2C-x%5D*Power%5B%5C%2840%29Integrate%5BPower%5Be%2C-x-t%5D*%5C%2840%29Power%5Be%2C-x-t%2Ba%5D-Power%5Be%2C-x-a%5D%5C%2841%29%2C%7Bt%2C0%2Ca%7D%5D%2BIntegrate%5BPower%5Be%2C-x%2Bt%5D*%5C%2840%29Power%5Be%2C-x%2Ba%5D-Power%5Be%2C-x-a%2Bt%5D%5C%2841%29%2C%7Bt%2C0%2Ca%7D%5D%5C%2841%29%2C2%5D%2C%7Bx%2C0%2Cinf%7D%5D}{Wolfram}
 		\end{center}
-		$$\EE(T) \approx \frac{n^3}{6} \cdot \delta^2 = \frac{n^3\delta^2}{6}$$
-		$$\DD(T) = \frac{n^3}{6}\PP + \frac{n^4}{4}\widetilde\PP + \frac{n^5}{8}\widetilde{\widetilde\PP} = \frac{n^3\delta^2}{6} + \frac{7n^4\delta^3}{24} + \frac{9n^5\delta^4}{40} \approx $$
-		$$ \approx 0.167\cdot n^3\delta^2 + 0.292\cdot n^4\delta^3 + 0.225\cdot n^5\delta^4$$
-		\begin{center}
-		$\DD(T) \approx 0.156\cdot n^3\delta^2 + 0.591\cdot n^4\delta^3 + 0.195\cdot n^5\delta^4$ --- получено на практике --- \href{https://www.wolframalpha.com/input?i=%7Ba*0.5%5E3*1000+%2B+b*0.5%5E4*1000+%2B+c*0.5%5E5*1000+%3D+62.501940419374999974%2C+a*1000+%2B+b*1000+%2B+c*1000+%3D+941.72429328309999974%2C+a*2%5E3*1000+%2B+b*2%5E4*1000+%2B+c*2%5E5*1000+%3D+16936.419938751099835%7D}{Wolfram}
-		\end{center}
+		$$\EE(T) = \frac{n(n-1)(n-2)}{6} \cdot \delta^2 \approx \frac{n^3\delta^2}{6}$$
+		$$\DD(T) = \frac{n(n-1)(n-2)}{6}\PP + \frac{n(n-1)(n-2)(n-3)}{4}\widetilde\PP + \frac{n(n-1)(n-2)(n-3)(n-4)}{8}\widetilde{\widetilde\PP} - $$
+		$$ - \frac{9 n^5 - 72 n^4 + 213 n^3 - 270 n^2 + 120 n}{36}\PP^2 \approx $$
+		$$ \approx \frac{n^3\delta^2}{6} + \frac{7n^4\delta^3}{12} + \frac{9n^5\delta^4}{20} - \frac{81n^5\delta^4}{25}$$
+
 		\item Нормальное распределение \\
 		$\Omega = (-\infty, \infty),\  p(x) = \dfrac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}}$ \\
+		Меня оно особым образом заинтересовало, поскольку тут нет проблемы с \textit{краями} распределения, поэтому $n$ можно разгонять до бесконечности даже при фиксированном $\delta$. \\
 		В этом случае точной зависимости $\PP$ от $\delta$ посчитать не получилось, но есть значения в некоторых точках (через Wolfram):
 		$$\begin{tabular}{|c|c|}
+		\hline
 		$\delta$ & $\PP$ \\
 		\hline
 		0.05 & 6.9e-4 \\
@@ -162,7 +174,9 @@
 		$$\PP \approx 0.276 \cdot \delta^2$$
 		Тогда получаем:
 		$$\EE(T) \approx \frac{n^3}{6} \PP \approx \frac{n^3\delta^2}{21.7}$$
-		Матожидание сошлось!
+		Вероятность $\widetilde\PP$ можно получить путем подсчета числа ромбов в выборках:
+		$$E(rh)_{n=100}^{\delta=0.01} \approx 7.0 \Longrightarrow \widetilde\PP = \frac{E(rh)\cdot4}{n^4} \approx 0.28\delta^3$$
+		А оставшийся $\widetilde{\widetilde\PP}$ получилось найти с помощью перебора + подгонки на больших значениях.
 	\end{enumerate}
 
 \section{Ковариация}
