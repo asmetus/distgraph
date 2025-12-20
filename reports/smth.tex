@@ -87,8 +87,8 @@
 \renewcommand\qedsymbol{$\blacksquare$}
 
 \begin{document}
-
-\section{Отчет}
+	Основная задача --- найти матожидание числа треугольников в дистанционном графе, полученном $N$ независимыми и одинаково распределенными случайными величинами.
+\section{Теоретические формулы}
 	Применяем метод индикаторов: \\
 	$I_{ijk}$ --- индикатор того, что точки под номерами $i, j, k$ образовали треугольник. \\
 	Вероятность его успеха: \\
@@ -127,13 +127,11 @@
 	Тут является важным коэффициент \textbf{2}, который появился оттого, что я \textbf{зафиксировал} выбор диагонального ребра, отчего автоморфизмов стало равно 4. \\
 	И случай бабочки:
 	$$\widetilde{\widetilde\PP} = \PP(I_{ijk}\ \&\ I_{iln}) = $$
-	$$= \int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x) \cdot \PP(\triangle_{345} | x_3 = x)dx = $$
-	$$= \int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x)^2 dx = $$
-	$$= \int\limits_a^b p(x) \left(\int\limits_0^\delta p(x+t) (F(x+\delta) - F(x+t-\delta))dt + \int\limits_0^\delta p(x-t) (F(x+\delta - t) - F(x-\delta))dt\right)^2 dx$$
-	Тут \textit{точно} не хватает множителя \textbf{2}, но я не знаю где...
+	$$= 2\cdot \int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x) \cdot \PP(\triangle_{345} | x_3 = x)dx = $$
+	$$= 2\cdot\int\limits_a^b p(x) \cdot \PP(\triangle_{123} | x_3 = x)^2 dx = $$
+	$$= 2\cdot\int\limits_a^b p(x) \left(\int\limits_0^\delta p(x+t) (F(x+\delta) - F(x+t-\delta))dt + \int\limits_0^\delta p(x-t) (F(x+\delta - t) - F(x-\delta))dt\right)^2 dx$$
 	
 \section{Для конкретных распределений}
-	\textbf{В ФОРМУЛАХ УЧТЕНО ДОМНОЖЕНИЕ ВЕРОЯТНОСТИ $\widetilde{\widetilde\PP}$ НА 2}
 	\begin{enumerate}
 		\item Равномерное распределение \\
 		$\Omega = (0, 1), \ \ F(x) = x$, получаем: \\
@@ -179,11 +177,5 @@
 		А оставшийся $\widetilde{\widetilde\PP}$ получилось найти с помощью перебора + подгонки на больших значениях.
 	\end{enumerate}
 
-\section{Ковариация}
-	$$cov(X, Y) = E(XY) - E(X)\cdot E(Y)$$
-	Для индикаторов:
-	$$cov(I_{ijk}\ \&\ I_{ijk}) = E(I_{ijk}) - E(I_{ijk})^2 = \PP(I_{ijk}) - \PP(I_{ijk})^2 = \PP - \PP^2$$
-	$$cov(I_{ijk}\ \&\ I_{ijl}) = E(I_{ijk}\ \&\ I_{ijl}) - E(I_{ijk})^2 = \PP(I_{ijk}\ \&\ I_{ijl}) - \PP(I_{ijk})^2 = \widetilde \PP - \PP^2$$
-	$$cov(I_{ijk}\ \&\ I_{ilm}) = E(I_{ijk}\ \&\ I_{ilm}) - E(I_{ijk})^2 = \PP(I_{ijk}\ \&\ I_{ilm}) - \PP(I_{ijk})^2 = \widetilde{\widetilde \PP} - \PP^2$$
 	
 \end{document}

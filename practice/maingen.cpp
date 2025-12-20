@@ -41,11 +41,11 @@ void gen_norm(vector <long double> &a){
     sort(a.begin(), a.end());
 }
 
-long long choose(long long n, long long k){
+long double choose(long double n, long double k){
     if(k > n)   return 0;
     long long result = 1;
     for(long long i=n-k+1;i<=n;i++)   result*=i;
-    for(long long i=2;i<=k;i++)       result/=i;
+    for(long long i=1;i<=k;i++)       result/=i;
     return result;
 }
 
@@ -89,18 +89,19 @@ int main(int argc, char* argv[]){
         }
         results[t] = res;
     }
-    long double sum = 0;
-    long double sq = 0;
-    for(long long i=0;i<reps;i++) sum+=results[i];
-    for(long long i=0;i<reps;i++) sq+=results[i]*results[i];
-    long double E = sum*1.0/reps;
-    long double D = sq*1.0/reps - E*E;
-    long double std = sqrt(D);
-    vector <long double> gist (reps);
-    for(int i=0;i<reps;i++){
-        gist[i] = (results[i] - E)/std;
-    }
-    sort(gist.begin(), gist.end());
-    for(int i=0;i<reps;i++) out << gist[i] << ' ';
-    cout << E << ' ' << D << endl;
+    for(int i=0;i<reps;i++) out << results[i] << ' ';
+    // long double sum = 0;
+    // long double sq = 0;
+    // for(long long i=0;i<reps;i++) sum+=results[i];
+    // for(long long i=0;i<reps;i++) sq+=results[i]*results[i];
+    // long double E = sum*1.0/reps;
+    // long double D = sq*1.0/reps - E*E;
+    // long double std = sqrt(D);
+    // vector <long double> gist (reps);
+    // for(int i=0;i<reps;i++){
+    //     gist[i] = (results[i] - E)/std;
+    // }
+    // sort(gist.begin(), gist.end());
+    // for(int i=0;i<reps;i++) out << gist[i] << ' ';
+    // cout << E << ' ' << D << endl;
 }
