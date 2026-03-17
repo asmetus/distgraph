@@ -13,32 +13,53 @@ uniform_real_distribution <long double> uni(0, 1);
 exponential_distribution <long double> expon(1);
 normal_distribution <long double> norm(0, 1);
 
-void gen_uni(vector <long double> &a){
+double lap(double mu, double b) {
+    double u = uni(rng) * 1.0 - 0.5;
+    return mu - b * (u < 0 ? -1.0 : 1.0) * logl(1.0 - 2.0 * abs(u));
+}
+
+void gen_uni(vector <long double> &v, long double a, long double b){
+    for(int j=0;j<v.size();j++){
+        v[j] = uni(rng) * (b-a) + a;
+    }
+    sort(v.begin(), v.end());
+}
+
+void gen_exp(vector <long double> &a, long double lambda, long double nothing){
+    long double adbmal = 1.0 / lambda;
     for(int j=0;j<a.size();j++){
-        a[j] = uni(rng);
+        a[j] = expon(rng) * adbmal;
     }
     sort(a.begin(), a.end());
 }
 
-void gen_exp_log(vector <long double> &a){
+void gen_norm(vector <long double> &a, long double mu, long double std){
     for(int j=0;j<a.size();j++){
-        a[j] = -logl(uni(rng));
+        a[j] = norm(rng) * std + mu;
     }
     sort(a.begin(), a.end());
 }
 
-void gen_exp(vector <long double> &a){
+void gen_lap(vector <long double> &a, long double mu, long double b){
     for(int j=0;j<a.size();j++){
-        a[j] = expon(rng);
+        a[j] = lap(mu, b);
     }
     sort(a.begin(), a.end());
 }
 
-void gen_norm(vector <long double> &a){
-    for(int j=0;j<a.size();j++){
-        a[j] = norm(rng);
+void gen_gam(vector <long double> &v, long double a, long double b){
+    std::gamma_distribution<long double> gam(a, b);
+    for(int j=0;j<v.size();j++){
+        v[j] = gam(rng);
     }
-    sort(a.begin(), a.end());
+    sort(v.begin(), v.end());
+}
+
+void gen_dnorm(vector <long double> &v, long double mu, long double std){
+    for(int j=0;j<v.size();j++){
+        v[j] = norm(rng) * std + (uni(rng) > 0.5?mu:-mu);
+    }
+    sort(v.begin(), v.end());
 }
 
 long double choose(long double n, long double k){
@@ -49,59 +70,126 @@ long double choose(long double n, long double k){
     return result;
 }
 
-long long reps = 10;
-long long N = 1000;
-long double delta = 1e-3;
+long long reps = 100000;
+long long N = 100;
+long double delta = 1e-2;
 long long distrib = 0;
-long long click_size = 3;
+long long type = 0;
+long long param = 3;
+long double arg1;
+bool flag1 = 0;
+bool flag2 = 0;
+long double arg2;
 ofstream out("result.txt");
 
 int main(int argc, char* argv[]){
-    cout.precision(20);
+    cout.precision(30);
     if(argc > 1){
         N = stod(argv[1]);
         delta = stod(argv[2]);
         reps = stod(argv[3]);
-        click_size = stod(argv[4]);
-        distrib = stod(argv[5]);
+
+        if(argv[4][0] == 'u')    distrib = 0; // uni
+        if(argv[4][0] == 'e')    distrib = 1; // exp
+        if(argv[4][0] == 'n')    distrib = 2; // norm
+        if(argv[4][0] == 'l')    distrib = 3; // lap
+        if(argv[4][0] == 'g')    distrib = 4; // gam
+        if(argv[4][0] == '2')    distrib = 5; // 2norm
+
+        if(argv[5][1] == 'r'){  type=0;param=3;}// triang
+        if(argv[5][1] == 'd'){  type=0;param=2;}// edges
+        if(argv[5][1] == 'o')   type = 1;       // concomp
+        if(argv[5][1] == 'n')   type = 2;       // indep
+        if(argv[5][1] == 'h')   type = 3;       // chrom
+
+        if(argc > 6){
+            flag1 = 1;
+            arg1 = stod(argv[6]);
+        }
+        if(argc > 7){
+            flag2 = 1;
+            arg2 = stod(argv[7]);
+        }
     }
     vector <long double> results(reps);
     vector <long double> numbers(N);
+    void (*gen)(vector <long double> &, long double, long double);
+    switch (distrib){
+    case 5:
+            gen = &gen_dnorm;
+            arg1 = (flag1?arg1:1);
+            arg2 = (flag2?arg2:2);
+            break;
+        case 4:
+            gen = &gen_gam;
+            arg1 = (flag1?arg1:1);
+            arg2 = (flag2?arg2:2);
+            break;
+        case 3:
+            gen = &gen_lap;
+            arg1 = (flag1?arg1:0);
+            arg2 = (flag2?arg2:1);
+            break;
+        case 2:
+            gen = &gen_norm;
+            arg1 = (flag1?arg1:0);
+            arg2 = (flag2?arg2:1);
+            break;
+        case 1:
+            gen = &gen_exp;
+            arg1 = (flag1?arg1:1);
+            arg2 = (flag1?arg1:0);
+            break;
+        case 0:
+            gen = &gen_uni;
+            arg1 = (flag1?arg1:0);
+            arg2 = (flag2?arg2:1);
+            break;
+    }
     long long step = reps/100;
     for(long long t=0;t<=reps;t++){
         if(t%step == 0) cout << t/step << endl;
-        switch (distrib){
-            case 2:
-                gen_norm(numbers);
-                break;
-            case 1:
-                gen_exp(numbers);
-                break;
-            case 0:
-                gen_uni(numbers);
-                break;
-        }
+        gen(numbers, arg1, arg2);
         long double res = 0;
         long long j = 0;
-        for(long long i=0;i<numbers.size();i++){
-            while(j < numbers.size() - 1 && numbers[j+1]*1.0 <= numbers[i] + delta)   j++;
-            res += choose(j-i, click_size - 1);
+        switch (type){
+            case 0:
+                for(long long i=0;i<numbers.size();i++){
+                    while(j < numbers.size() - 1 && numbers[j+1]*1.0 <= numbers[i] + delta)   j++;
+                    res += choose(j-i, param - 1);
+                }
+                break;
+            case 1:
+                for(long long i=0;i<numbers.size();i++){
+                    j = i;
+                    while(j < numbers.size() - 1 && numbers[j+1]*1.0 <= numbers[j] + delta)   j++;
+                    res += 1;
+                    i = j;
+                }
+                break;
+            case 2:
+                for(long long i=0;i<numbers.size();i++){
+                    res += 1;
+                    while(j < numbers.size() - 1 && numbers[j+1]*1.0 <= numbers[i] + delta)   j++;
+                    i = j;
+                }
+                break;
+            case 3:
+                for(long long i=0;i<numbers.size();i++){
+                    auto xl = upper_bound(numbers.begin(), numbers.end(), numbers[i] - delta);
+                    auto xr = lower_bound(numbers.begin(), numbers.end(), numbers[i] + delta);
+                    long double click = distance(xl, xr-1);
+                    res = max(res, click);
+                }
+                break;
         }
         results[t] = res;
     }
-    for(int i=0;i<reps;i++) out << results[i] << ' ';
-    // long double sum = 0;
-    // long double sq = 0;
-    // for(long long i=0;i<reps;i++) sum+=results[i];
-    // for(long long i=0;i<reps;i++) sq+=results[i]*results[i];
-    // long double E = sum*1.0/reps;
-    // long double D = sq*1.0/reps - E*E;
-    // long double std = sqrt(D);
-    // vector <long double> gist (reps);
-    // for(int i=0;i<reps;i++){
-    //     gist[i] = (results[i] - E)/std;
-    // }
-    // sort(gist.begin(), gist.end());
-    // for(int i=0;i<reps;i++) out << gist[i] << ' ';
-    // cout << E << ' ' << D << endl;
+    long long x = 0;
+    for(int i=0;i<reps;i++){
+        if(results[i] > 10000 && results[i] < 1e18){
+            x = results[i];
+            out << x << ' ';
+        }else   out << results[i] << ' ';
+    }
 }
